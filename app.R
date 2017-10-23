@@ -27,7 +27,7 @@ ui <- fluidPage(
   theme = shinytheme("flatly"),
   
   # Create title panel
-  titlePanel(title = logo, windowTitle = "Shiny GDAX"),
+  titlePanel(title = logo, windowTitle = "Shiny-GDAX"),
   tags$h1(),
     
   # Live data tab
