@@ -1,9 +1,9 @@
-library(shiny)
-library(shinythemes)
-library(xts)
-library(dygraphs)
 library(httr)
 library(jsonlite)
+library(shiny)
+library(shinythemes)
+library(dygraphs)
+library(xts)
 
 # Load GDAX public client API functions
 source("rgdax/public_client.R")
