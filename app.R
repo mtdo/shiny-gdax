@@ -5,18 +5,18 @@ library(shinythemes)
 library(dygraphs)
 library(xts)
 
-# Load GDAX public client API functions
-source("rgdax/public_client.R")
+# Load Coinbase Pro public client API functions
+source("coinbasepror/public_client.R")
 
 # Use a proxy (NULL for no proxy)
 proxy <- NULL
 
-# Load GDAX logo
-logo <- img(src ="gdax-logo-dark.svg",
+# Load Coinbase logo
+logo <- img(src ="coinbase.svg",
             align = "top",
-            width = "15%",
-            height = "15%",
-            style = "margin-left:20px;
+            width = "10%",
+            height = "10%",
+            style = "margin-left:0px;
                      margin-right:20px;
                      margin-bottom:20px")
             
@@ -27,7 +27,7 @@ ui <- fluidPage(
   theme = shinytheme("flatly"),
   
   # Create title panel
-  titlePanel(title = logo, windowTitle = "Shiny-GDAX"),
+  titlePanel(title = logo, windowTitle = "Shiny Coinbase Pro"),
   tags$h1(),
     
   # Live data tab
@@ -77,29 +77,29 @@ ui <- fluidPage(
              ),
     tabPanel("About",
              tags$h1(),
-             tags$h4("Shiny-GDAX"),
+             tags$h4("Shiny Coinbase Pro"),
              tags$h1(),
              tags$div(
-               "The Global Digital Asset Exchange (GDAX) is a regulated U.S. 
+               "Coinbase Pro is a regulated U.S. 
                based exchange service for institutions and professional traders 
                offering digital currencies like Bitcoin, Ethereum and Litecoin 
                for fiat currency."
              ),
              tags$h1(),
              tags$div(
-               "Shiny-GDAX is an interactive market visualization tool for GDAX 
-               built using the GDAX API and the Shiny R package. The tool 
+               "Shiny Coinbase Pro is an interactive market visualization tool for Coinbase Pro 
+               built using the Coinbase Pro API and the Shiny R package. The tool 
                allows price and order book monitoring with more features coming 
                soon."
              ),
              tags$h1(),
              tags$div(
-               "The currencies and their minimum sizes currently in GDAX are"
+               "The currencies and their minimum sizes currently in Coinbase Pro are"
              ),
              dataTableOutput("currencyTable"),
              tags$h1(),
              tags$div(
-               "The products in GDAX available for trading are"
+               "The products in Coinbase Pro available for trading are"
              ),
              dataTableOutput("productTable"),
              tags$hr()

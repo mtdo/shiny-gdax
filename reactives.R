@@ -1,5 +1,5 @@
 #### Monitor tab ####
-#Load products
+# Load products
 products <- getProducts(proxy = proxy)
 
 # Update base currency selections (BTC default)
@@ -12,29 +12,27 @@ quotes <- products$quote_currency[which(products$base_currency == "BTC")]
 updateSelectInput(session, "quoteCurrency", choices = quotes, selected = "USD")
 
 # Define separate reactive values for base and quote currency selections
-values <- reactiveValues(base = "BTC", quote = "USD", product = "BTC-USD")
+values <- reactiveValues(product = "BTC-USD")
 
 # Update reactive values
-# Keep quote currency selection persistent whenever possible
 observe({
-  req(input$baseCurrency, input$quoteCurrency)
-  if ((input$baseCurrency == "BTC") && (input$quoteCurrency == "BTC")) {
-    values$base <- input$baseCurrency
-    values$quote <- "USD"
-  } else if ((input$baseCurrency != "BTC") && (input$quoteCurrency == "GBP")) {
-    values$base <- input$baseCurrency
-    values$quote <- "USD"
-  } else {
-    values$base <- input$baseCurrency
-    values$quote <- input$quoteCurrency
-  }
-  values$product <- paste(values$base, "-", values$quote, sep = "")
+  req(input$quoteCurrency)
+  values$product <- paste(isolate(input$baseCurrency), "-", input$quoteCurrency, sep = "")
 })
 
 # Update quote currency selections whenever new base is selected
+# Keep quote currency persistent when changing base currency (whenever possible)
 observe({
-  quotes <- products$quote_currency[which(products$base_currency == values$base)]
-  updateSelectInput(session, "quoteCurrency", choices = quotes, selected = values$quote)
+  req(input$baseCurrency)
+  quotes <- sort(products$quote_currency[which(products$base_currency == input$baseCurrency)])
+  if (isolate(input$quoteCurrency) %in% quotes) {
+    updateSelectInput(session, "quoteCurrency", choices = quotes, selected = isolate(input$quoteCurrency))
+    values$product <- paste(isolate(input$baseCurrency), "-", input$quoteCurrency, sep = "")
+  } else if ("USD" %in% quotes) {
+    updateSelectInput(session, "quoteCurrency", choices = quotes, selected = "USD")
+  } else {
+    updateSelectInput(session, "quoteCurrency", choices = quotes, selected = quotes[1])
+  }
 })
 
 # Update product historic prices automatically based on granularity
@@ -92,7 +90,9 @@ output$orderDepthGraph <- renderDygraph({
 # Render currency table
 output$currencyTable <- renderDataTable({
   table <- getCurrencies(proxy = proxy)
-  colnames(table) <- c("id", "name", "min size")
+  table <- table[order(table$details$sort_order),]
+  table <- cbind(table[,c("id","name","min_size")], table$details[,c("type","symbol")])
+  colnames(table) <- c("id", "name", "min size", "type", "symbol")
   table
 }, options = list(
   paging = F,
